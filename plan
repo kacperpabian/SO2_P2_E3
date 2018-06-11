@@ -1,0 +1,2 @@
+na 2 etap zacząć projekt w temacie stacji paliw.
+jest stacja, zamochód może podjechać i zatankować. Kiedy paliwo będzie około 15% w stacji, podjeżdza cysterna i dolewa paliwa. samochody ustawiają się w kolejke czekająć na swoją kolej w tankowaniu.

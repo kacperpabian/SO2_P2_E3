@@ -1,0 +1,1 @@
+g++ -g Main.cpp -std=c++11 -o projekt -lncurses -pthread
