@@ -84,12 +84,7 @@ class PetrolStation
         int posy = 8, posx = 120, prevy, prevx;
         bool inStation = false;
 
-        // if(petrolStation->getPetrol() >100)
-        // {
-            // cv.notify_all();
-        // }
-
-        if(getPetrol() < 100)
+        if(getPetrol() < 200)
         {
             refresh();
         mvprintw(posy, posx, "    __   __________ ");
@@ -101,9 +96,6 @@ class PetrolStation
         std::unique_lock<std::mutex> lock(mtx);
         cv.wait(lock);
 
-
-
-        
         while(!inStation)
         {
             
@@ -123,9 +115,10 @@ class PetrolStation
             if(posx == 92)
             {
                 inStation = true;
-                while(petrolStation->getPetrol() != 200)
+                while(petrolStation->getPetrol() != 400)
                 {
                     petrolStation->setPetrol(petrolStation->getPetrol()+1);
+                    petrolStation->drawPetrolPoints();
                     usleep(20000);
                 }
                 mvprintw(posy, posx, "                    ");
@@ -136,6 +129,7 @@ class PetrolStation
             
             
         }
+        cv.notify_one();
 
     }
         }

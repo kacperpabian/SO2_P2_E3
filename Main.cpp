@@ -15,7 +15,7 @@ int main()
 {
     std::mutex * mtx;
     int carChar;
-    PetrolStation *petrolStation = new PetrolStation(200, 5);
+    PetrolStation *petrolStation = new PetrolStation(400, 5);
     std::vector<std::thread> threads;
     initscr();
  	noecho();
@@ -56,7 +56,7 @@ PetrolStation *petrolStation)
     {
         if (getch() == carChar)
     {
-        Car car (5, 1, 40, 1, 1);
+        Car car (5, 1, 60, 1, 1);
         car.carAll(petrolStation);
         exists = true;
     }

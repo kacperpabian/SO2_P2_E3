@@ -87,16 +87,28 @@ class Car
         bool stationed = false;
         int indexStation;
         int prevX1, prevY1;
+        
+        
+        petrolStation->setCarsNumber(petrolStation->getCarsNumber() + 1);
+
         std::unique_lock<std::mutex> locker(mtx3);
-        if(petrolStation->getCarsNumber() >=5)
-        {
-            cv2.wait(locker);
-        }
+
         refresh();
         mvprintw(getPositionY(), getPositionX(), "OOOOO");
         mvprintw(getPositionY()+1, getPositionX(), "OOOOO");
         mvprintw(getPositionY()+2, getPositionX()+1, "o o");
-        petrolStation->setCarsNumber(petrolStation->getCarsNumber() + 1);
+
+        if(petrolStation->getPetrol() < 200)
+        {
+            std::unique_lock<std::mutex> locker2(petrolStation->mtx);
+            petrolStation->cv.wait(locker2);
+        }
+
+        if(petrolStation->getCarsNumber() >=6)
+        {
+            cv2.wait(locker);
+        }
+        
         
         for(int i = 0; i< petrolStation->stations.size(); i++ )
         {
@@ -211,9 +223,12 @@ class Car
 
     void tankCar(PetrolStation *petrolStation, int index)
     {
-
+        
         if(petrolStation->checkFree == false)
+        {
             std::unique_lock<std::mutex> lock(mtx3);
+        }
+            
         while(getFuel()<getCapacity())
         {
             usleep(200000);
@@ -223,7 +238,22 @@ class Car
         }
         removeCar(petrolStation);
         petrolStation->stations[index].setOccupied(false);
+
         cv2.notify_one();
+
+        bool occupied = false;
+        for(int i = 0; i< petrolStation->stations.size(); i++ )
+        {
+            if(petrolStation->stations[i].getOccupied() == true)
+            {
+                occupied = true;
+            }
+        }
+        if(!occupied)
+        {
+            petrolStation->cv.notify_one();
+        }
+        
     
     }
 
