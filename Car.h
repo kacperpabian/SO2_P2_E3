@@ -98,11 +98,6 @@ class Car
         mvprintw(getPositionY()+1, getPositionX(), "OOOOO");
         mvprintw(getPositionY()+2, getPositionX()+1, "o o");
 
-        if(petrolStation->getPetrol() < 200)
-        {
-            std::unique_lock<std::mutex> locker2(petrolStation->mtx);
-            petrolStation->cv.wait(locker2);
-        }
 
         if(petrolStation->getCarsNumber() >=6)
         {
@@ -129,6 +124,12 @@ class Car
         if(petrolStation->checkFree == false)
         {
             cv2.wait(locker);
+        }
+
+        if(petrolStation->getPetrol() < 200)
+        {
+            std::unique_lock<std::mutex> locker2(petrolStation->mtx);
+            petrolStation->cv.wait(locker2);
         }
 
 
