@@ -75,8 +75,10 @@ class PetrolStation
 
     void drawPetrolPoints()
     {
+        std::unique_lock<std::mutex> lock2(mtx2);
         refresh();
         mvprintw(6, 78, "%d", getPetrol());
+        lock2.unlock();
     }
 
     void tankPetrolSuperCar(PetrolStation *petrolStation)
@@ -86,11 +88,14 @@ class PetrolStation
 
         if(getPetrol() < 200)
         {
-            refresh();
+
+        std::unique_lock<std::mutex> lock2(mtx2);
+        refresh();
         mvprintw(posy, posx, "    __   __________ ");
         mvprintw(posy+1, posx, "  _//]| |          |");
         mvprintw(posy+2, posx, " |____|-|__________|");
         mvprintw(posy+3, posx, "    O      O     O  ");
+        lock2.unlock();
 
 
         std::unique_lock<std::mutex> lock(mtx);
@@ -102,6 +107,7 @@ class PetrolStation
             usleep(20000);
             prevx = posx;
             posx --;
+            std::unique_lock<std::mutex> lock2(mtx2);
             refresh();
             mvprintw(posy, prevx, "                    ");
             mvprintw(posy+1, prevx, "                    ");
@@ -112,6 +118,7 @@ class PetrolStation
             mvprintw(posy+2, posx, " |____|-|__________|");
             mvprintw(posy+3, posx, "    O      O     O  ");
             refresh();
+            lock2.unlock();
             if(posx == 92)
             {
                 inStation = true;
@@ -121,10 +128,12 @@ class PetrolStation
                     petrolStation->drawPetrolPoints();
                     usleep(20000);
                 }
+                std::unique_lock<std::mutex> lock2(mtx2);
                 mvprintw(posy, posx, "                    ");
                 mvprintw(posy+1, posx, "                    ");
                 mvprintw(posy+2, posx, "                    ");
                 mvprintw(posy+3, posx, "                    ");
+                lock2.unlock();
             }
             
             

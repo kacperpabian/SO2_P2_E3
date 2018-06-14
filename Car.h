@@ -93,10 +93,12 @@ class Car
 
         std::unique_lock<std::mutex> locker(mtx3);
 
+        std::unique_lock<std::mutex> locker4(mtx4);
         refresh();
         mvprintw(getPositionY(), getPositionX(), "OOOOO");
         mvprintw(getPositionY()+1, getPositionX(), "OOOOO");
         mvprintw(getPositionY()+2, getPositionX()+1, "o o");
+        locker4.unlock();
 
 
         if(petrolStation->getCarsNumber() >=6)
@@ -140,6 +142,7 @@ class Car
             prevX1 = getPositionX();
             prevY1 = getPositionY();
             setPositionX(getPositionX()+1);
+            std::unique_lock<std::mutex> locker4(mtx4);
             mvprintw(prevY1, prevX1, " ");
             mvprintw(prevY1+1, prevX1, " ");
             mvprintw(prevY1+2, prevX1+1, " ");
@@ -147,6 +150,7 @@ class Car
             mvprintw(getPositionY()+1, getPositionX(), "OOOOO");
             mvprintw(getPositionY()+2, getPositionX()+1, "o o");
             refresh();
+            locker4.unlock();
             
             if(getPositionX() == 45 && getPositionY() == 1)
             {
@@ -209,13 +213,13 @@ class Car
                     usleep(30000);
                     prevY1 = getPositionY();
                     setPositionY(getPositionY() + 1);
-                    // std::unique_lock<std::mutex> locker(mtx3);
+                    std::unique_lock<std::mutex> locker4(mtx4);
                     mvprintw(prevY1, prevX1, "      ");;
                     mvprintw(getPositionY(), getPositionX(), "OOOOO");
                     mvprintw(getPositionY()+1, getPositionX(), "OOOOO");
                     mvprintw(getPositionY()+2, getPositionX()+1, "o o");
                     refresh();
-                    // locker.unlock();
+                    locker4.unlock();
                     if(getPositionY() == posY)
                         nextTrack = true;
                 }
@@ -261,9 +265,11 @@ class Car
     void removeCar(PetrolStation *petrolStation)
     {
         petrolStation->setCarsNumber(petrolStation->getCarsNumber() - 1);
+        std::unique_lock<std::mutex> locker4(mtx4);
         mvprintw(getPositionY(), getPositionX(), "     ");
         mvprintw(getPositionY()+1, getPositionX(), "     ");
         mvprintw(getPositionY()+2, getPositionX()+1, "   ");
         refresh();
+        locker4.unlock();
     }
 };
